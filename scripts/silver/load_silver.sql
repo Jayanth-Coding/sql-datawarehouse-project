@@ -1,5 +1,6 @@
 USE DataWareHouse;
 
+TRUNCATE TABLE silver.crm_cust_info;
 INSERT INTO silver.crm_cust_info 
 (
 cst_id,cst_key,cst_firstname,cst_lastname,cst_marital_status,cst_gndr,cst_create_date
@@ -27,13 +28,14 @@ from bronze.crm_cust_info where cst_id is not null
 )t where latest_rec=1  ;
 
 
+TRUNCATE TABLE silver.crm_prd_info;
 INSERT INTO silver.crm_prd_info 
 (
 prd_id, cat_id, prd_key, prd_nm, prd_cost, prd_line, prd_Start_dt, prd_end_dt
 )
 SELECT
 prd_id,
-REPLACE(SUBSTRING(prd_key, 1, 5), '', '') as cat_id,
+REPLACE(SUBSTRING(prd_key, 1, 5), '-', '_') as cat_id,
 SUBSTRING(prd_key, 7, LEN(prd_key)) as prd_key, 
 prd_nm,
 ISNULL(prd_cost,0) prd_cost,
@@ -46,4 +48,4 @@ ELSE 'n/a'
 END as prd_line,
 prd_start_dt,
 DATEADD(DAY, -1, lead(prd_start_dt) over(partition by prd_key order by prd_start_dt))  AS prd_end_dt
-from bronze.crm_prd_info
+from bronze.crm_prd_info;
