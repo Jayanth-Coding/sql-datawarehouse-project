@@ -83,4 +83,27 @@ SELECT sls_ord_num,
        THEN sls_sales / NULLIF(sls_quantity, 0)
        ELSE sls_price
        END AS sls_price
-  FROM [DataWareHouse].[bronze].[crm_sales_details]
+  FROM [DataWareHouse].[bronze].[crm_sales_details];
+
+
+TRUNCATE TABLE silver.erp_cust_az12;
+INSERT INTO silver.erp_cust_az12
+(
+cid, bdate, gen
+)
+SELECT
+CASE
+WHEN CID LIKE 'NAS%'  
+THEN SUBSTRING(CID, 4, LEN(CID))
+ELSE CID
+END AS CID,
+CASE WHEN bdate> GETDATE() THEN NULL
+     ELSE BDATE
+END AS BDATE,
+CASE WHEN UPPER(TRIM(GEN)) IN ('F','FEMALE') THEN 'Female'
+     WHEN UPPER(TRIM(GEN)) IN ('M','MALE') THEN 'Male'
+     else 'n/a'
+end as gen
+  FROM [DataWareHouse].BRONZE.[erp_cust_az12];
+
+
