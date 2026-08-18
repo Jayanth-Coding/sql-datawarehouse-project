@@ -107,3 +107,19 @@ end as gen
   FROM [DataWareHouse].BRONZE.[erp_cust_az12];
 
 
+TRUNCATE TABLE silver.erp_loc_a101; 
+INSERT INTO silver.erp_loc_a101 
+(
+cid, cntry
+)
+SELECT 
+REPLACE([cid], '-', '') CID,
+CASE WHEN TRIM(CNTRY) = 'DE' THEN 'Germany'
+	 WHEN TRIM(CNTRY) in ('US','USA') THEN 'United States'
+	 WHEN TRIM(CNTRY) = '' or cntry is null THEN 'n/a'
+	 ELSE TRIM(CNTRY)
+END
+ as [cntry]
+FROM [DataWareHouse].[bronze].[erp_loc_a101]
+
+
