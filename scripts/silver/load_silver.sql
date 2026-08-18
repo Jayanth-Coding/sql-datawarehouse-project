@@ -120,6 +120,21 @@ CASE WHEN TRIM(CNTRY) = 'DE' THEN 'Germany'
 	 ELSE TRIM(CNTRY)
 END
  as [cntry]
-FROM [DataWareHouse].[bronze].[erp_loc_a101]
+FROM [DataWareHouse].[bronze].[erp_loc_a101];
+
+
+TRUNCATE TABLE  DataWareHouse.silver.[erp_px_cat_g1v2];
+INSERT INTO DataWareHouse.silver.[erp_px_cat_g1v2]
+( [id]
+,[cat]
+,[subcat]
+,[maintenance]
+)
+SELECT  [id]
+      ,[cat]
+      ,[subcat]
+      ,[maintenance]
+  FROM [DataWareHouse].[bronze].[erp_px_cat_g1v2]
+  ;
 
 
